@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CashBook - Md. Rabiul Hossain</title>
+
+  <!-- PWA & Mobile Web App Settings -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CashBook" />
+  <meta name="theme-color" content="#2563eb" />
+
+  <!-- SVG App Icon for Home Screen & Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='120' fill='%232563eb'/><path d='M160 96h192a64 64 0 0 1 64 64v192a64 64 0 0 1-64 64H160a64 64 0 0 1-64-64V160a64 64 0 0 1 64-64z' fill='%231d4ed8'/><path d='M160 128h192a32 32 0 0 1 32 32v192a32 32 0 0 1-32 32H160a32 32 0 0 1-32-32V160a32 32 0 0 1 32-32z' fill='%23ffffff'/><path d='M220 220h72v24h-72zm0 48h72v24h-72zm-32-48h16v24h-16zm0 48h16v24h-16z' fill='%232563eb'/><circle cx='310' cy='310' r='18' fill='%2310b981'/></svg>" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='120' fill='%232563eb'/><path d='M160 96h192a64 64 0 0 1 64 64v192a64 64 0 0 1-64 64H160a64 64 0 0 1-64-64V160a64 64 0 0 1 64-64z' fill='%231d4ed8'/><path d='M160 128h192a32 32 0 0 1 32 32v192a32 32 0 0 1-32 32H160a32 32 0 0 1-32-32V160a32 32 0 0 1 32-32z' fill='%23ffffff'/><path d='M220 220h72v24h-72zm0 48h72v24h-72zm-32-48h16v24h-16zm0 48h16v24h-16z' fill='%232563eb'/><circle cx='310' cy='310' r='18' fill='%2310b981'/></svg>" />
+
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22CashBook%20-%20Md.%20Rabiul%20Hossain%22%2C%22short_name%22%3A%22CashBook%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23eff6ff%22%2C%22theme_color%22%3A%22%232563eb%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%20512%20512'%3E%3Crect%20width%3D'512'%20height%3D'512'%20rx%3D'120'%20fill%3D'%232563eb'%2F%3E%3Cpath%20d%3D'M160%2096h192a64%2064%200%200%201%2064%2064v192a64%2064%200%200%201-64%2064H160a64%2064%200%200%201-64-64V160a64%2064%200%200%201%2064-64z'%20fill%3D'%231d4ed8'%2F%3E%3Cpath%20d%3D'M160%20128h192a32%2032%200%200%201%2032%2032v192a32%2032%200%200%201-32%2032H160a32%2032%200%200%201-32-32V160a32%2032%200%200%201%2032-32z'%20fill%3D'%23ffffff'%2F%3E%3Cpath%20d%3D'M220%20220h72v24h-72zm0%2048h72v24h-72zm-32-48h16v24h-16zm0%2048h16v24h-16z'%20fill%3D'%232563eb'%2F%3E%3Ccircle%20cx%3D'310'%20cy%3D'310'%20r%3D'18'%20fill%3D'%2310b981'%2F%3E%3C%2Fsvg%3E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <!-- jsPDF & AutoTable CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body class="bg-blue-50/50 min-h-screen flex items-center justify-center p-4">
+
+  <!-- ================= POP-UP TOAST NOTIFICATION (3s Auto-hide) ================= -->
+  <div id="toastNotification" class="fixed top-5 z-50 transition-all duration-300 transform -translate-y-20 opacity-0 pointer-events-none flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-xl text-sm font-semibold border">
+    <i id="toastIcon" class="fa-solid fa-circle-check text-lg"></i>
+    <span id="toastMessage">Message text</span>
+  </div>
+
+  <!-- ================= AUTH / LOGIN CARD ================= -->
+  <div id="loginCard" class="w-full max-w-sm bg-white rounded-3xl shadow-xl p-8 border border-gray-100 space-y-6">
+    <div class="text-center space-y-1">
+      <h1 class="text-xl font-bold text-gray-900 tracking-tight">Md. Rabiul Hossain</h1>
+      <h2 class="text-lg font-semibold text-gray-600">Cashbook</h2>
+    </div>
+
+    <form id="loginForm" class="space-y-4 pt-2" onsubmit="event.preventDefault(); handleLogin();">
+      <div id="loginError" class="hidden text-xs text-red-600 bg-red-50 p-2.5 rounded-xl border border-red-200 text-center font-medium"></div>
+
+      <div>
+        <input 
+          type="text" 
+          id="loginUsername" 
+          placeholder="Username" 
+          required
+          autocomplete="username"
+          class="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" 
+        />
+      </div>
+
+      <div>
+        <input 
+          type="password" 
+          id="loginPassword" 
+          placeholder="Password" 
+          required
+          autocomplete="current-password"
+          class="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition" 
+        />
+      </div>
+
+      <button 
+        type="submit" 
+        class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-semibold rounded-xl shadow-md transition duration-150 ease-in-out"
+      >
+        Login
+      </button>
+    </form>
+  </div>
+
+  <!-- ================= MAIN APP DASHBOARD ================= -->
+  <div id="appContainer" class="hidden w-full max-w-md bg-white rounded-3xl shadow-xl p-6 border border-gray-100 space-y-5 my-4">
+    
+    <!-- Top Bar with Header & Logout -->
+    <div class="flex items-center justify-between pb-2 border-b border-gray-100">
+      <div>
+        <h1 class="text-base font-bold text-gray-800">Md. Rabiul Hossain</h1>
+        <h2 class="text-xl font-black text-gray-900 tracking-tight">CashBook</h2>
+      </div>
+      <button onclick="handleLogout()" title="Logout" class="px-3 py-1.5 text-xs font-medium text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition border border-gray-200">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+      </button>
+    </div>
+
+    <!-- Book Selector + Action Dropdown Menu -->
+    <div class="space-y-1.5">
+      <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Select Book</label>
+      <div class="flex gap-2 relative">
+        <select id="bookDropdown" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-800 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="">Dashboard</option>
+        </select>
+
+        <!-- 3-Dot Action Menu Button -->
+        <div class="relative">
+          <button 
+            id="bookMenuBtn" 
+            type="button" 
+            class="h-full px-3.5 bg-gray-100 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-200 transition focus:outline-none"
+            title="Book Actions"
+          >
+            <i class="fa-solid fa-ellipsis-vertical text-base"></i>
+          </button>
+
+          <!-- Dropdown Popover Menu -->
+          <div 
+            id="bookMenuDropdown" 
+            class="hidden absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 py-1.5 z-50 text-sm"
+          >
+            <!-- 1. PDF Report Item -->
+            <button 
+              id="menuPdfBtn" 
+              type="button" 
+              class="w-full text-left px-4 py-2.5 text-emerald-700 hover:bg-emerald-50 flex items-center gap-3 transition font-medium"
+            >
+              <span class="w-7 h-7 flex items-center justify-center bg-emerald-100 rounded-lg text-emerald-700"><i class="fa-solid fa-file-pdf"></i></span>
+              PDF Report
+            </button>
+
+            <!-- 2. Entries History Menu Item -->
+            <button 
+              id="menuHistoryBtn" 
+              type="button" 
+              class="w-full text-left px-4 py-2.5 text-blue-700 hover:bg-blue-50 flex items-center gap-3 transition font-medium"
+            >
+              <span class="w-7 h-7 flex items-center justify-center bg-blue-100 rounded-lg text-blue-700"><i class="fa-solid fa-clock-rotate-left"></i></span>
+              Entries History
+            </button>
+            
+            <div class="border-t border-gray-100 my-1"></div>
+
+            <!-- 3. Delete Book Item -->
+            <button 
+              id="menuDeleteBtn" 
+              type="button" 
+              class="w-full text-left px-4 py-2.5 text-red-600 hover:bg-red-50 flex items-center gap-3 transition font-medium"
+            >
+              <span class="w-7 h-7 flex items-center justify-center bg-red-100 rounded-lg text-red-600"><i class="fa-solid fa-trash"></i></span>
+              Delete Book
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create New Book Form -->
+    <div class="space-y-2 pt-2 border-t border-gray-100">
+      <input type="text" id="newBookName" placeholder="New Book Name" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <button id="createBookBtn" class="w-full py-3 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-semibold rounded-xl transition flex justify-center items-center gap-2 shadow-sm">
+        <span>📚</span> Create New Book
+      </button>
+    </div>
+
+    <!-- MAIN DASHBOARD OVERVIEW -->
+    <div id="overviewDashboard" class="space-y-3 pt-2 border-t border-gray-100">
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-blue-50/80 p-4 rounded-2xl border border-blue-100">
+          <p class="text-xs text-gray-500 font-bold uppercase">Total Books</p>
+          <p id="totalBooksCount" class="text-2xl font-black text-gray-900 mt-1">0</p>
+        </div>
+        <div class="bg-emerald-50/80 p-4 rounded-2xl border border-emerald-100">
+          <p class="text-xs text-emerald-600 font-bold uppercase">Grand Balance</p>
+          <p id="grandTotalAmount" class="text-2xl font-black text-emerald-700 mt-1">Tk 0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPECIFIC BOOK DETAILS SECTION -->
+    <div id="bookDetailsSection" class="hidden space-y-4">
+      <!-- Entry Form -->
+      <div class="space-y-3 pt-2 border-t border-gray-100">
+        <!-- Debit/Credit Selector -->
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" id="btnCredit" class="py-2.5 font-bold rounded-xl border border-green-500 bg-green-50 text-green-700 shadow-sm transition">
+            + Credit (In)
+          </button>
+          <button type="button" id="btnDebit" class="py-2.5 font-bold rounded-xl border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 transition">
+            - Debit (Out)
+          </button>
+        </div>
+
+        <input type="number" id="entryAmount" placeholder="Amount (Tk)" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <input type="text" id="entryRemark" placeholder="Remark / Narration" class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+        <button id="addEntryBtn" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-semibold rounded-xl transition flex justify-center items-center gap-2 shadow-md">
+          <i class="fa-solid fa-plus"></i> <span id="entryBtnText">Add Entry</span>
+        </button>
+      </div>
+
+      <!-- Single Book Summary Box -->
+      <div class="bg-blue-50/80 rounded-2xl p-4 space-y-1.5 border border-blue-100">
+        <div class="flex justify-between font-bold text-gray-800">
+          <span>Book Total:</span>
+          <span id="summaryTotal" class="text-blue-700 font-black">Tk 0</span>
+        </div>
+        <div class="flex justify-between text-sm text-gray-600">
+          <span>Total Entries:</span>
+          <span id="summaryCount">0</span>
+        </div>
+        <div class="flex justify-between text-sm text-gray-600">
+          <span>Last Entry Date:</span>
+          <span id="summaryLastDate">-</span>
+        </div>
+      </div>
+
+      <!-- Dropdown Accordion for Entries History -->
+      <div class="border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+        <button 
+          id="toggleHistoryAccordionBtn" 
+          type="button" 
+          class="w-full p-3.5 bg-gray-50 hover:bg-gray-100 flex items-center justify-between font-bold text-gray-700 text-xs uppercase tracking-wider transition"
+        >
+          <span class="flex items-center gap-2">
+            <i class="fa-solid fa-clock-rotate-left text-blue-600"></i> Entries History
+          </span>
+          <i id="accordionChevron" class="fa-solid fa-chevron-down text-gray-400 transition-transform duration-200"></i>
+        </button>
+        
+        <div id="entriesHistoryContainer" class="hidden p-3 bg-white space-y-2 max-h-60 overflow-y-auto border-t border-gray-100">
+          <div id="entriesList" class="space-y-2">
+            <!-- Dynamic Entry Cards -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Scripts (v9 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    // ================= TOAST NOTIFICATION LOGIC =================
+    let toastTimeout;
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toastNotification');
+      const toastMessage = document.getElementById('toastMessage');
+      const toastIcon = document.getElementById('toastIcon');
+
+      clearTimeout(toastTimeout);
+      toastMessage.textContent = message;
+
+      if (type === 'success') {
+        toast.className = "fixed top-5 z-50 transition-all duration-300 transform translate-y-0 opacity-100 pointer-events-auto flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-xl text-sm font-semibold bg-emerald-600 text-white border-emerald-500";
+        toastIcon.className = "fa-solid fa-circle-check text-lg";
+      } else if (type === 'error') {
+        toast.className = "fixed top-5 z-50 transition-all duration-300 transform translate-y-0 opacity-100 pointer-events-auto flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-xl text-sm font-semibold bg-red-600 text-white border-red-500";
+        toastIcon.className = "fa-solid fa-circle-exclamation text-lg";
+      } else {
+        toast.className = "fixed top-5 z-50 transition-all duration-300 transform translate-y-0 opacity-100 pointer-events-auto flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-xl text-sm font-semibold bg-gray-800 text-white border-gray-700";
+        toastIcon.className = "fa-solid fa-circle-info text-lg";
+      }
+
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+        toast.classList.add('-translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    // ================= 1. AUTH LOGIC =================
+    const USERNAME_DEFAULT = "robi";
+    const PASSWORD_DEFAULT = "robi123@";
+
+    const loginCard = document.getElementById("loginCard");
+    const appContainer = document.getElementById("appContainer");
+    const loginError = document.getElementById("loginError");
+
+    function checkAuthStatus() {
+      const isAuth = localStorage.getItem("isCashBookAuth");
+      if (isAuth === "true") {
+        loginCard.classList.add("hidden");
+        appContainer.classList.remove("hidden");
+      } else {
+        loginCard.classList.remove("hidden");
+        appContainer.classList.add("hidden");
+      }
+    }
+
+    function handleLogin() {
+      const u = document.getElementById("loginUsername").value.trim();
+      const p = document.getElementById("loginPassword").value.trim();
+
+      if (u === USERNAME_DEFAULT && p === PASSWORD_DEFAULT) {
+        localStorage.setItem("isCashBookAuth", "true");
+        loginError.classList.add("hidden");
+        checkAuthStatus();
+        showToast("Login successful!", "success");
+      } else {
+        loginError.textContent = "Invalid Username or Password!";
+        loginError.classList.remove("hidden");
+        showToast("Login failed!", "error");
+      }
+    }
+
+    function handleLogout() {
+      if (confirm("Are you sure you want to log out?")) {
+        localStorage.removeItem("isCashBookAuth");
+        document.getElementById("loginUsername").value = "";
+        document.getElementById("loginPassword").value = "";
+        checkAuthStatus();
+        showToast("Logged out successfully.", "info");
+      }
+    }
+
+    checkAuthStatus();
+
+    // ================= 2. FIREBASE CONFIG =================
+    const firebaseConfig = {
+      apiKey: "AIzaSyBXjdIVj5-Jrt-mdVQY5f6gPtFEe8xZQ9Q",
+      authDomain: "myacc-9084e.firebaseapp.com",
+      projectId: "myacc-9084e",
+      storageBucket: "myacc-9084e.firebasestorage.app",
+      messagingSenderId: "922391324685",
+      appId: "1:922391324685:web:bc7c9debd7a049103b8d44",
+      measurementId: "G-J0VMFWNG3B"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // App State
+    let currentBookId = "";
+    let currentBookName = "";
+    let currentTxType = "credit";
+    let editingEntryId = null;
+    let currentEntriesData = [];
+    let allBooksList = [];
+
+    // DOM Elements
+    const bookDropdown = document.getElementById("bookDropdown");
+    const bookMenuBtn = document.getElementById("bookMenuBtn");
+    const bookMenuDropdown = document.getElementById("bookMenuDropdown");
+    const menuPdfBtn = document.getElementById("menuPdfBtn");
+    const menuHistoryBtn = document.getElementById("menuHistoryBtn");
+    const menuDeleteBtn = document.getElementById("menuDeleteBtn");
+    const newBookName = document.getElementById("newBookName");
+    const createBookBtn = document.getElementById("createBookBtn");
+    const overviewDashboard = document.getElementById("overviewDashboard");
+    const bookDetailsSection = document.getElementById("bookDetailsSection");
+    const totalBooksCount = document.getElementById("totalBooksCount");
+    const grandTotalAmount = document.getElementById("grandTotalAmount");
+
+    const btnCredit = document.getElementById("btnCredit");
+    const btnDebit = document.getElementById("btnDebit");
+    const entryAmount = document.getElementById("entryAmount");
+    const entryRemark = document.getElementById("entryRemark");
+    const addEntryBtn = document.getElementById("addEntryBtn");
+    const entryBtnText = document.getElementById("entryBtnText");
+    const entriesList = document.getElementById("entriesList");
+
+    const toggleHistoryAccordionBtn = document.getElementById("toggleHistoryAccordionBtn");
+    const entriesHistoryContainer = document.getElementById("entriesHistoryContainer");
+    const accordionChevron = document.getElementById("accordionChevron");
+
+    // Action Dropdown Menu Toggle
+    bookMenuBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      bookMenuDropdown.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!bookMenuDropdown.contains(e.target) && e.target !== bookMenuBtn) {
+        bookMenuDropdown.classList.add("hidden");
+      }
+    });
+
+    // Toggle Entries History Dropdown View
+    function toggleEntriesHistory(openState = null) {
+      const isHidden = entriesHistoryContainer.classList.contains("hidden");
+      const shouldOpen = openState !== null ? openState : isHidden;
+
+      if (shouldOpen) {
+        entriesHistoryContainer.classList.remove("hidden");
+        accordionChevron.classList.add("rotate-180");
+      } else {
+        entriesHistoryContainer.classList.add("hidden");
+        accordionChevron.classList.remove("rotate-180");
+      }
+    }
+
+    toggleHistoryAccordionBtn.addEventListener("click", () => toggleEntriesHistory());
+
+    menuHistoryBtn.addEventListener("click", () => {
+      bookMenuDropdown.classList.add("hidden");
+      if (!currentBookId) return showToast("Please select a book first!", "error");
+      toggleEntriesHistory(true);
+      toggleHistoryAccordionBtn.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Toggle Debit / Credit Type
+    btnCredit.addEventListener("click", () => setType("credit"));
+    btnDebit.addEventListener("click", () => setType("debit"));
+
+    function setType(type) {
+      currentTxType = type;
+      if (type === "credit") {
+        btnCredit.className = "py-2.5 font-bold rounded-xl border border-green-500 bg-green-50 text-green-700 shadow-sm transition";
+        btnDebit.className = "py-2.5 font-bold rounded-xl border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 transition";
+      } else {
+        btnDebit.className = "py-2.5 font-bold rounded-xl border border-red-500 bg-red-50 text-red-700 shadow-sm transition";
+        btnCredit.className = "py-2.5 font-bold rounded-xl border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 transition";
+      }
+    }
+
+    // ================= 3. LOAD BOOKS & OVERVIEW CALCULATION =================
+    db.collection("books").onSnapshot(snapshot => {
+      allBooksList = [];
+      bookDropdown.innerHTML = `<option value="">Dashboard</option>`;
+
+      let totalBooks = snapshot.size;
+      totalBooksCount.textContent = totalBooks;
+
+      snapshot.forEach(doc => {
+        allBooksList.push({ id: doc.id, ...doc.data() });
+        const option = document.createElement("option");
+        option.value = doc.id;
+        option.textContent = `📘 ${doc.data().name}`;
+        bookDropdown.appendChild(option);
+      });
+
+      if (currentBookId && allBooksList.some(b => b.id === currentBookId)) {
+        bookDropdown.value = currentBookId;
+        showBookView();
+      } else {
+        currentBookId = "";
+        currentBookName = "";
+        bookDropdown.value = "";
+        showDashboardView();
+      }
+
+      calculateGrandTotal(snapshot.docs);
+    });
+
+    async function calculateGrandTotal(bookDocs) {
+      let overallBalance = 0;
+      for (const doc of bookDocs) {
+        const entriesSnap = await db.collection("books").doc(doc.id).collection("entries").get();
+        entriesSnap.forEach(eDoc => {
+          const item = eDoc.data();
+          if (item.type === "credit") {
+            overallBalance += Number(item.amount);
+          } else {
+            overallBalance -= Number(item.amount);
+          }
+        });
+      }
+      grandTotalAmount.textContent = `Tk ${overallBalance}`;
+    }
+
+    function showDashboardView() {
+      overviewDashboard.classList.remove("hidden");
+      bookDetailsSection.classList.add("hidden");
+      if (unsubscribeEntries) unsubscribeEntries();
+    }
+
+    function showBookView() {
+      overviewDashboard.classList.add("hidden");
+      bookDetailsSection.classList.remove("hidden");
+      loadEntries(currentBookId);
+    }
+
+    // Switch Book via Dropdown
+    bookDropdown.addEventListener("change", (e) => {
+      currentBookId = e.target.value;
+      if (currentBookId) {
+        const selectedOption = bookDropdown.options[bookDropdown.selectedIndex];
+        currentBookName = selectedOption ? selectedOption.text.replace("📘 ", "") : "Book";
+        showBookView();
+      } else {
+        showDashboardView();
+      }
+    });
+
+    // Create New Book
+    createBookBtn.addEventListener("click", async () => {
+      const name = newBookName.value.trim();
+      if (!name) return showToast("Please enter a book name!", "error");
+
+      const docRef = await db.collection("books").add({
+        name: name,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      newBookName.value = "";
+      currentBookId = docRef.id;
+      currentBookName = name;
+      showToast(`Book "${name}" created successfully!`, "success");
+    });
+
+    // Delete Book
+    menuDeleteBtn.addEventListener("click", async () => {
+      bookMenuDropdown.classList.add("hidden");
+      if (!currentBookId) {
+        return showToast("Please select a book from the dropdown to delete.", "error");
+      }
+      const isConfirmed = confirm(`⚠️ Are you sure you want to delete "${currentBookName}" book?\nAll transactions inside this book will be permanently deleted!`);
+      if (isConfirmed) {
+        await db.collection("books").doc(currentBookId).delete();
+        showToast("Book deleted successfully.", "success");
+      }
+    });
+
+    // ================= 4. ADD / EDIT ENTRY =================
+    addEntryBtn.addEventListener("click", async () => {
+      const amount = parseFloat(entryAmount.value);
+      const remark = entryRemark.value.trim();
+
+      if (!currentBookId) return showToast("Please select a book first from the dropdown!", "error");
+      if (isNaN(amount) || amount <= 0) return showToast("Please enter a valid amount!", "error");
+
+      const payload = {
+        amount: amount,
+        type: currentTxType,
+        remark: remark || "-",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      if (editingEntryId) {
+        await db.collection("books").doc(currentBookId).collection("entries").doc(editingEntryId).update(payload);
+        editingEntryId = null;
+        entryBtnText.textContent = "Add Entry";
+        showToast("Entry updated successfully!", "success");
+      } else {
+        await db.collection("books").doc(currentBookId).collection("entries").add(payload);
+        showToast("New entry added successfully!", "success");
+      }
+
+      entryAmount.value = "";
+      entryRemark.value = "";
+    });
+
+    // Load Entries Realtime
+    let unsubscribeEntries = null;
+    function loadEntries(bookId) {
+      if (unsubscribeEntries) unsubscribeEntries();
+
+      unsubscribeEntries = db.collection("books").doc(bookId).collection("entries")
+        .orderBy("timestamp", "desc")
+        .onSnapshot(snapshot => {
+          let entries = [];
+          snapshot.forEach(doc => entries.push({ id: doc.id, ...doc.data() }));
+          currentEntriesData = entries;
+          renderEntries(entries);
+        });
+    }
+
+    // Render Entries & Update Summary
+    function renderEntries(entries) {
+      entriesList.innerHTML = "";
+      let total = 0;
+      let lastDate = "-";
+
+      if (entries.length > 0 && entries[0].timestamp) {
+        lastDate = entries[0].timestamp.toDate().toLocaleString("en-GB", { dateStyle: "short", timeStyle: "short" });
+      }
+
+      entries.forEach(item => {
+        const isCredit = item.type === "credit";
+        total += isCredit ? item.amount : -item.amount;
+
+        const dateStr = item.timestamp ? item.timestamp.toDate().toLocaleDateString("en-GB") : "Just now";
+
+        const div = document.createElement("div");
+        div.className = "flex justify-between items-center p-3 border rounded-2xl bg-gray-50 text-sm";
+        div.innerHTML = `
+          <div>
+            <p class="font-bold text-gray-800">${item.remark}</p>
+            <p class="text-xs text-gray-400">${dateStr}</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="font-bold ${isCredit ? 'text-green-600' : 'text-red-600'}">
+              ${isCredit ? '+' : '-'} Tk ${item.amount}
+            </span>
+            <button onclick="editEntry('${item.id}', ${item.amount}, '${item.remark}', '${item.type}')" class="text-blue-500 hover:text-blue-700"><i class="fa-solid fa-pen"></i></button>
+            <button onclick="deleteEntry('${item.id}')" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+        entriesList.appendChild(div);
+      });
+
+      // Update Summary Cards
+      document.getElementById("summaryTotal").textContent = `Tk ${total}`;
+      document.getElementById("summaryCount").textContent = entries.length;
+      document.getElementById("summaryLastDate").textContent = lastDate;
+    }
+
+    // Delete Single Entry with Warning Confirmation
+    window.deleteEntry = async (id) => {
+      const isConfirmed = confirm("Are you sure you want to delete this entry?");
+      if (isConfirmed) {
+        await db.collection("books").doc(currentBookId).collection("entries").doc(id).delete();
+        showToast("Entry deleted successfully!", "info");
+      }
+    };
+
+    window.editEntry = (id, amount, remark, type) => {
+      editingEntryId = id;
+      entryAmount.value = amount;
+      entryRemark.value = remark;
+      setType(type);
+      entryBtnText.textContent = "Update Entry";
+      window.scrollTo({ top: 100, behavior: 'smooth' });
+    };
+
+    // ================= 5. PDF REPORT GENERATION =================
+    function generatePDFReport() {
+      bookMenuDropdown.classList.add("hidden");
+      if (!currentBookId) return showToast("Please select a book from the dropdown to generate report!", "error");
+      if (currentEntriesData.length === 0) return showToast("No transactions available in this book!", "error");
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+
+      // Top Title: Cash Book (Centered)
+      doc.setFontSize(22);
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(0, 0, 0);
+      doc.text("Cash Book", pageWidth / 2, 20, { align: 'center' });
+
+      // Subtitle: Book Name (Centered)
+      doc.setFontSize(13);
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Book Name: ${currentBookName.toUpperCase()}`, pageWidth / 2, 28, { align: 'center' });
+
+      // Date & Time (Centered)
+      const now = new Date();
+      const currentFormattedDate = now.toLocaleString("en-GB", { 
+        day: "2-digit", 
+        month: "short", 
+        year: "numeric", 
+        hour: "2-digit", 
+        minute: "2-digit" 
+      });
+      doc.setFontSize(10);
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(60, 60, 60);
+      doc.text(`Date & Time: ${currentFormattedDate}`, pageWidth / 2, 35, { align: 'center' });
+
+      let totalCredit = 0;
+      let totalDebit = 0;
+
+      // Table Data (Chronological)
+      const tableRows = [...currentEntriesData].reverse().map((item, index) => {
+        const isCredit = item.type === "credit";
+        if (isCredit) {
+          totalCredit += Number(item.amount);
+        } else {
+          totalDebit += Number(item.amount);
+        }
+
+        const dateStr = item.timestamp 
+          ? item.timestamp.toDate().toLocaleString("en-GB", { dateStyle: "short", timeStyle: "short" }) 
+          : "-";
+
+        return [
+          index + 1,
+          dateStr,
+          item.remark || "-",
+          isCredit ? `Tk ${item.amount}` : "-",
+          !isCredit ? `Tk ${item.amount}` : "-"
+        ];
+      });
+
+      const netBalance = totalCredit - totalDebit;
+
+      // Clean Black & White Grid Table with Only Net Balance Footer
+      doc.autoTable({
+        startY: 42,
+        head: [['#', 'Date & Time', 'Narration / Remark', 'Credit (In)', 'Debit (Out)']],
+        body: tableRows,
+        foot: [
+          [
+            { content: 'Net Balance', colSpan: 3, styles: { halign: 'right', fontStyle: 'bold', textColor: [0, 0, 0], fontSize: 10 } },
+            { content: `Tk ${netBalance}`, colSpan: 2, styles: { halign: 'right', fontStyle: 'bold', textColor: [0, 0, 0], fontSize: 10 } }
+          ]
+        ],
+        theme: 'grid',
+        styles: {
+          lineColor: [0, 0, 0],
+          lineWidth: 0.25,
+          fontSize: 9,
+          cellPadding: 3.5,
+          textColor: [0, 0, 0]
+        },
+        headStyles: {
+          fillColor: false,
+          textColor: [0, 0, 0],
+          fontStyle: 'bold',
+          lineColor: [0, 0, 0],
+          lineWidth: 0.35
+        },
+        footStyles: {
+          fillColor: false,
+          lineColor: [0, 0, 0],
+          lineWidth: 0.35
+        },
+        columnStyles: {
+          0: { cellWidth: 12, halign: 'center' },
+          1: { cellWidth: 38 },
+          2: { cellWidth: 'auto' },
+          3: { halign: 'right', fontStyle: 'bold' },
+          4: { halign: 'right', fontStyle: 'bold' }
+        }
+      });
+
+      // Open PDF in new tab
+      window.open(doc.output('bloburl'), '_blank');
+      showToast("PDF report generated successfully!", "success");
+    }
+
+    menuPdfBtn.addEventListener("click", generatePDFReport);
+  </script>
+</body>
+</html>
